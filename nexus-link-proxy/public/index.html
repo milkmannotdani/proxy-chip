@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <title>NEXUS — Link Proxy</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#1b2340 0,#10131c 48%);color:#eef1ff;font:15px system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}
+    main{width:min(960px,calc(100% - 32px));padding:48px 0}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:54px}
+    .brand{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:800;letter-spacing:2px}
+    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#91a2ff,#5868df);display:grid;place-items:center;box-shadow:0 8px 28px #6575ef55}
+    .status{font-size:12px;color:#9ce6c2;border:1px solid #285b4b;background:#153328;padding:7px 11px;border-radius:99px}
+    .hero{text-align:center;margin:0 auto 28px;max-width:700px}
+    h1{font-size:clamp(36px,7vw,58px);line-height:1.05;margin:0 0 16px;letter-spacing:-2px}
+    h1 span{background:linear-gradient(90deg,#a8b5ff,#788bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .sub{color:#aab2ca;line-height:1.7;margin:0}
+    .panel{max-width:760px;margin:32px auto 0;padding:20px;border:1px solid #303954;background:#171d2bdb;border-radius:22px;box-shadow:0 24px 80px #0005}
+    label{display:block;color:#aab2ca;font-size:11px;font-weight:700;letter-spacing:1.5px;margin:2px 0 10px}
+    .inputrow{display:flex;gap:10px;background:#0e1320;border:1px solid #303954;padding:8px;border-radius:14px}
+    input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;font-size:15px;padding:0 10px}
+    input::placeholder{color:#69738d}
+    button{border:0;border-radius:10px;padding:13px 20px;background:#7182f2;color:white;font-weight:700;font-size:14px;cursor:pointer}
+    button:hover{filter:brightness(1.1)}button:focus-visible,input:focus-visible{outline:2px solid #aab5ff;outline-offset:3px}
+    .hint{font-size:12px;color:#7f89a4;margin:12px 4px 0}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:760px;margin:18px auto}
+    .feature{padding:17px;border:1px solid #29334d;background:#171d2b99;border-radius:15px;color:#dce2ff}
+    .feature b{display:block;font-size:13px;margin:8px 0 4px}.feature small{color:#8994b1;line-height:1.5}
+    .symbol{font-size:20px;color:#9baaff}
+    #error{display:none;color:#ffb8b8;background:#3a2029;border:1px solid #693844;padding:12px;border-radius:10px;margin-top:12px}
+    footer{text-align:center;color:#69738d;font-size:12px;margin-top:38px}
+    @media(max-width:600px){main{padding-top:26px}header{margin-bottom:42px}.features{grid-template-columns:1fr}.inputrow{flex-direction:column}button{width:100%}.panel{padding:15px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><div class="logo">✦</div>NEXUS</div>
+    <div class="status">● READY</div>
+  </header>
+  <section class="hero">
+    <h1>Browse beyond<br><span>the ordinary.</span></h1>
+    <p class="sub">A clean link-preview proxy for public websites, wrapped in a simple browser-style interface.</p>
+  </section>
+  <section class="panel">
+    <form id="proxyForm">
+      <label for="url">ENTER A WEBSITE ADDRESS</label>
+      <div class="inputrow">
+        <input id="url" type="text" inputmode="url" autocomplete="url" placeholder="https://example.com" required maxlength="2048">
+        <button type="submit">Browse ↗</button>
+      </div>
+      <div class="hint">Only public HTTP and HTTPS websites are supported.</div>
+      <div id="error" role="alert"></div>
+    </form>
+  </section>
+  <section class="features">
+    <div class="feature"><div class="symbol">◇</div><b>Simple interface</b><small>One address bar, no clutter.</small></div>
+    <div class="feature"><div class="symbol">⌁</div><b>Link navigation</b><small>Follow supported page links through the proxy.</small></div>
+    <div class="feature"><div class="symbol">⛨</div><b>Safer by design</b><small>Blocks local/private network destinations and limits response size.</small></div>
+  </section>
+  <footer>NEXUS LINK PROXY · Use responsibly and respect website terms.</footer>
+</main>
+<script>
+  const form = document.querySelector("#proxyForm");
+  const input = document.querySelector("#url");
+  const error = document.querySelector("#error");
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    error.style.display = "none";
+    let value = input.value.trim();
+    if (!/^https?:\\/\\//i.test(value)) value = "https://" + value;
+    try {
+      const parsed = new URL(value);
+      if (!["http:", "https:"].includes(parsed.protocol)) throw new Error();
+      location.href = "/proxy?url=" + encodeURIComponent(parsed.toString());
+    } catch {
+      error.textContent = "Please enter a valid website address.";
+      error.style.display = "block";
+    }
+  });
+</script>
+</body>
+</html>
